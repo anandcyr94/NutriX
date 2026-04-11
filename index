@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indian Heterogeneous Food Calorie Tracker</title>
+    <style>
+        :root {
+            --primary-color: #2E7D32; /* Deep Green for Food/Health */
+            --secondary-color: #F9A825; /* Saffron/Orange accent */
+            --bg-color: #f4f7f6;
+            --text-color: #333;
+            --card-bg: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-color), #1b5e20);
+            color: white;
+            padding: 2rem 1rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .credits {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-top: 10px;
+            background: rgba(0,0,0,0.2);
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 5px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .card h2 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 0.5rem;
+        }
+
+        /* Camera Section */
+        .camera-container {
+            position: relative;
+            width: 100%;
+            background: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            aspect-ratio: 4/3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #camera-stream, #captured-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        #captured-image {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .controls {
+            margin-top: 1rem;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-capture {
+            background-color: var(--secondary-color);
+            color: #fff;
+        }
+
+        .btn-capture:hover { background-color: #e65100; }
+
+        .btn-analyze {
+            background-color: var(--primary-color);
+            color: white;
+            display: none; /* Hidden until image is captured */
+        }
+
+        .btn-analyze:hover { background-color: #1b5e20; }
+
+        .btn-reset {
+            background-color: #757575;
+            color: white;
+            display: none;
+        }
+
+        .btn-reset:hover { background-color: #424242; }
+
+        /* Results Section */
+        .loader {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+            font-style: italic;
+            color: #666;
+        }
+
+        .results-container {
+            display: none;
+        }
+
+        .total-calories {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--secondary-color);
+            text-align: center;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: #fff8e1;
+            border-radius: 8px;
+            border: 1px solid #ffecb3;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th { background-color: #f5f5f5; color: #333; }
+        
+        .macro-badges {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            justify-content: center;
+        }
+
+        .badge {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: white;
+        }
+
+        .carbs { background-color: #4CAF50; }
+        .protein { background-color: #2196F3; }
+        .fat { background-color: #F44336; }
+
+        @media (max-width: 768px) {
+            .container { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Calorie Estimation of Indian Heterogeneous Foods</h1>
+        <p>Advanced image recognition for localized diet tracking</p>
+        <div class="credits">
+            <strong>Developed by:</strong> Saruthi, Sankar & Abipriyadharshini<br>
+            <strong>Mentored by:</strong> Anand<br>
+            <em>Food Technology @ Rajalakshmi Engineering College (REC)</em>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <h2>Pen-Camera Interface</h2>
+            <p style="margin-bottom: 1rem; font-size: 0.9rem; color: #666;">
+                *Hardware feed will appear here. Click capture to freeze the frame for analysis.*
+            </p>
+            
+            <div class="camera-container">
+                <video id="camera-stream" autoplay playsinline></video>
+                <canvas id="snapshot" style="display: none;"></canvas>
+                <img id="captured-image" alt="Captured Food Frame">
+            </div>
+
+            <div class="controls">
+                <button class="btn-capture" id="capture-btn">📷 Capture Food</button>
+                <button class="btn-reset" id="reset-btn">↺ Retake</button>
+                <button class="btn-analyze" id="analyze-btn">🔍 Analyze Calories</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Nutritional Analysis</h2>
+            
+            <div class="loader" id="loader">
+                <p>🔄 Matching image with REC Food Database...</p>
+                <p style="font-size: 0.8rem; margin-top: 5px;">Extracting features for heterogeneous Indian foods...</p>
+            </div>
+
+            <div id="initial-state" style="text-align: center; padding: 2rem; color: #888;">
+                Capture an image from the pen camera to view calorie estimation.
+            </div>
+
+            <div class="results-container" id="results">
+                <div class="total-calories">Total: <span id="total-cal">0</span> kcal</div>
+                
+                <h3>Detected Components</h3>
+                <table id="food-table">
+                    <thead>
+                        <tr>
+                            <th>Food Item</th>
+                            <th>Est. Portion</th>
+                            <th>Calories</th>
+                        </tr>
+                    </thead>
+                    <tbody id="food-table-body">
+                        </tbody>
+                </table>
+
+                <div class="macro-badges">
+                    <span class="badge carbs">Carbs: <span id="carbs-val">0</span>g</span>
+                    <span class="badge protein">Protein: <span id="protein-val">0</span>g</span>
+                    <span class="badge fat">Fat: <span id="fat-val">0</span>g</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const video = document.getElementById('camera-stream');
+        const canvas = document.getElementById('snapshot');
+        const capturedImg = document.getElementById('captured-image');
+        const captureBtn = document.getElementById('capture-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        const analyzeBtn = document.getElementById('analyze-btn');
+        
+        const loader = document.getElementById('loader');
+        const initialState = document.getElementById('initial-state');
+        const resultsContainer = document.getElementById('results');
+
+        // Initialize Webcam (Simulating Pen Camera hardware feed)
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                video.srcObject = stream;
+            })
+            .catch(err => {
+                console.error("Error accessing camera: ", err);
+                alert("Please allow camera access to test the interface, or connect your hardware pen-camera.");
+            });
+
+        // Capture functionality
+        captureBtn.addEventListener('click', () => {
+            // Set canvas dimensions to match video
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            
+            // Draw current video frame to canvas
+            const context = canvas.getContext('2d');
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            // Convert canvas to image data URL
+            const imageData = canvas.toDataURL('image/png');
+            capturedImg.src = imageData;
+            
+            // UI Toggles
+            capturedImg.style.display = 'block';
+            captureBtn.style.display = 'none';
+            resetBtn.style.display = 'block';
+            analyzeBtn.style.display = 'block';
+        });
+
+        // Reset functionality
+        resetBtn.addEventListener('click', () => {
+            capturedImg.style.display = 'none';
+            captureBtn.style.display = 'block';
+            resetBtn.style.display = 'none';
+            analyzeBtn.style.display = 'none';
+            
+            // Reset Results UI
+            resultsContainer.style.display = 'none';
+            initialState.style.display = 'block';
+            loader.style.display = 'none';
+        });
+
+        // Analyze functionality (Simulating AI Backend)
+        analyzeBtn.addEventListener('click', () => {
+            initialState.style.display = 'none';
+            resultsContainer.style.display = 'none';
+            loader.style.display = 'block';
+
+            // Simulate server/database request time (2.5 seconds)
+            setTimeout(() => {
+                loader.style.display = 'none';
+                displayMockResults();
+            }, 2500);
+        });
+
+        // Mock Database Results for Indian Heterogeneous Food (e.g., South Indian Meals/Thali)
+        function displayMockResults() {
+            const mockData = {
+                totalCalories: 645,
+                carbs: 95,
+                protein: 18,
+                fat: 22,
+                items: [
+                    { name: "White Rice", portion: "1.5 cups (250g)", calories: 325 },
+                    { name: "Sambar", portion: "1 bowl (150g)", calories: 120 },
+                    { name: "Potato Poriyal", portion: "1/2 cup (100g)", calories: 140 },
+                    { name: "Appalam", portion: "1 piece", calories: 60 }
+                ]
+            };
+
+            // Populate UI
+            document.getElementById('total-cal').innerText = mockData.totalCalories;
+            document.getElementById('carbs-val').innerText = mockData.carbs;
+            document.getElementById('protein-val').innerText = mockData.protein;
+            document.getElementById('fat-val').innerText = mockData.fat;
+
+            const tbody = document.getElementById('food-table-body');
+            tbody.innerHTML = ''; // Clear previous
+            
+            mockData.items.forEach(item => {
+                const row = `<tr>
+                    <td><strong>${item.name}</strong></td>
+                    <td>${item.portion}</td>
+                    <td>${item.calories} kcal</td>
+                </tr>`;
+                tbody.innerHTML += row;
+            });
+
+            resultsContainer.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
