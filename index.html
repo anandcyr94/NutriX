@@ -59,7 +59,7 @@
         #login-screen {
             position: fixed; inset: 0; background: var(--bg-light-purple);
             display: flex; justify-content: center; align-items: center; z-index: 2000;
-            padding: 20px; /* Added padding for mobile */
+            padding: 20px; 
             box-sizing: border-box;
         }
 
@@ -83,7 +83,7 @@
             border: 2px solid var(--border-light); 
             color: var(--text-dark);
             padding: 15px; 
-            width: 100%; /* Changed to 100% to fit container better */
+            width: 100%; 
             box-sizing: border-box;
             margin: 20px 0; 
             text-align: center; 
@@ -115,7 +115,6 @@
             box-shadow: 0 4px 10px rgba(107, 33, 168, 0.2); 
         }
 
-        /* FIXED: Reduced minmax to 300px so it stacks perfectly on mobile screens */
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
 
         .module { 
@@ -224,7 +223,8 @@
 
             <div class="module">
                 <h3 style="color:var(--text-muted); margin:0 0 15px 0; font-size: 1rem; letter-spacing: 1px;">[ PROCESSED_FRAME ]</h3>
-                <canvas id="snapshot" style="display: none;"></canvas> <img id="display-image" style="width: 100%; border-radius: 8px; border: 1px solid var(--border-light); display: none;">
+                <canvas id="snapshot" style="display: none;"></canvas>
+                <img id="display-image" style="width: 100%; border-radius: 8px; border: 1px solid var(--border-light); display: none;">
                 
                 <div id="controls" style="display:none; gap:15px; margin-top:15px;">
                     <button class="btn" id="upBtn" onclick="sync()">SAVE TO DRIVE</button>
@@ -242,14 +242,15 @@
     </div>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/a/macros/rajalakshmi.edu.in/s/AKfycbxSQGBeBQgZ942GjgMp6AChzEoqKf0nvA6H2w9GFvfzbJS1RqrgvSyRoKTPZFHHmjUD/exec";
+        // Updated with the new accessible Apps Script URL
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzrY8Cl03yjKm76JOalDwhdlBGe9dV8J5vnhVhGOtGhPKE7VUrukEZdx5X8_hLM9BIbkw/exec";
 
         function updateClock() { 
             const timeString = new Date().toLocaleTimeString();
             document.querySelectorAll('#clock').forEach(el => el.innerText = timeString);
         }
         setInterval(updateClock, 1000);
-        updateClock(); // Initial call
+        updateClock(); 
 
         function setStatus(msg) { document.getElementById('status-bar').innerText = "> " + msg.toUpperCase(); }
 
@@ -267,11 +268,10 @@
 
         async function startCam() {
             try {
-                // Ensure playsinline is respected on mobile Safari
                 const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
                 const videoEl = document.getElementById('webcam');
                 videoEl.srcObject = stream;
-                videoEl.setAttribute('playsinline', true); // crucial for iOS
+                videoEl.setAttribute('playsinline', true);
                 setStatus("Monitoring active.");
             } catch (err) {
                 console.error("Camera error:", err);
@@ -291,7 +291,6 @@
             c.height = v.videoHeight;
             c.getContext('2d').drawImage(v, 0, 0);
             
-            // Show captured image
             imgDisplay.src = c.toDataURL('image/jpeg', 0.8);
             imgDisplay.style.display = 'block';
             
@@ -315,7 +314,6 @@
             const name = document.getElementById('userInput').value;
             const canvas = document.getElementById('snapshot');
             
-            // FIXED: Changed to JPEG and 70% quality to compress payload size
             const data = canvas.toDataURL('image/jpeg', 0.7); 
             
             const upBtn = document.getElementById('upBtn');
@@ -328,7 +326,6 @@
 
             fetch(SCRIPT_URL, {
                 method: 'POST',
-                // Using text/plain avoids some strict CORS preflight checks in Apps Script
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
                 body: JSON.stringify({ 
                     image: data, 
@@ -353,7 +350,7 @@
                 setStatus("SYNC ERROR: UPLOAD FAILED.");
                 document.getElementById('status-bar').style.color = "var(--status-error)";
                 document.getElementById('status-bar').style.borderColor = "var(--status-error)";
-                alert("Upload failed. Check your Apps Script deployment permissions.");
+                alert("Upload failed. Please check your console for details.");
                 upBtn.innerText = "SAVE TO DRIVE";
                 upBtn.disabled = false; 
                 reBtn.disabled = false;
