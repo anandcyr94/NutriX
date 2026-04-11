@@ -3,376 +3,361 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Indian Heterogeneous Food Calorie Tracker</title>
+    <title>NUTRIX | Institutional Data Sync</title>
     <style>
         :root {
-            --primary-color: #2E7D32; /* Deep Green for Food/Health */
-            --secondary-color: #F9A825; /* Saffron/Orange accent */
-            --bg-color: #f4f7f6;
-            --text-color: #333;
-            --card-bg: #ffffff;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --bg-white: #ffffff;
+            --bg-light-purple: #f8f5ff;
+            --purple-main: #6b21a8; /* Deep Purple */
+            --purple-hover: #9333ea; /* Lighter Purple */
+            --text-dark: #1f2937;
+            --text-muted: #4b5563;
+            --border-light: #e5e7eb;
+            --status-success: #16a34a;
+            --status-error: #dc2626;
         }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            line-height: 1.6;
-        }
-
-        header {
-            background: linear-gradient(135deg, var(--primary-color), #1b5e20);
-            color: white;
-            padding: 2rem 1rem;
-            text-align: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        header h1 {
-            font-size: 2.2rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .credits {
-            font-size: 0.9rem;
-            opacity: 0.9;
-            margin-top: 10px;
-            background: rgba(0,0,0,0.2);
-            display: inline-block;
-            padding: 10px 20px;
-            border-radius: 5px;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 1rem;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-        }
-
-        .card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
-
-        .card h2 {
-            color: var(--primary-color);
-            margin-bottom: 1rem;
-            border-bottom: 2px solid #eee;
-            padding-bottom: 0.5rem;
-        }
-
-        /* Camera Section */
-        .camera-container {
-            position: relative;
-            width: 100%;
-            background: #000;
-            border-radius: 8px;
-            overflow: hidden;
-            aspect-ratio: 4/3;
+            background-color: var(--bg-light-purple);
+            color: var(--text-dark);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
+            min-height: 100vh;
         }
 
-        #camera-stream, #captured-image {
+        #clock { 
+            position: absolute; 
+            top: 20px; 
+            right: 30px; 
+            color: var(--purple-main); 
+            font-family: monospace; 
+            font-size: 1.1rem; 
+            font-weight: bold;
+        }
+
+        /* --- LOGO PLACEHOLDER --- */
+        .logo-placeholder {
+            width: 120px;
+            height: 120px;
+            background-color: #f3e8ff;
+            border: 2px dashed var(--purple-main);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 20px auto;
+            color: var(--purple-main);
+            font-weight: bold;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        /* ACCESS SYSTEM */
+        #login-screen {
+            position: fixed; inset: 0; background: var(--bg-light-purple);
+            display: flex; justify-content: center; align-items: center; z-index: 2000;
+            padding: 20px; /* Added padding for mobile */
+            box-sizing: border-box;
+        }
+
+        .login-card {
+            background: var(--bg-white); 
+            border: 1px solid var(--border-light);
+            padding: 50px; 
+            text-align: center; 
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(107, 33, 168, 0.1);
+            max-width: 450px;
             width: 100%;
-            height: 100%;
+            box-sizing: border-box;
+        }
+
+        .rec-text { font-size: 1.2rem; font-weight: 700; letter-spacing: 2px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 5px; }
+        .nutrix-text { color: var(--purple-main); font-size: 3rem; font-weight: 900; letter-spacing: 8px; text-transform: uppercase; margin-bottom: 25px; }
+
+        input {
+            background: var(--bg-white); 
+            border: 2px solid var(--border-light); 
+            color: var(--text-dark);
+            padding: 15px; 
+            width: 100%; /* Changed to 100% to fit container better */
+            box-sizing: border-box;
+            margin: 20px 0; 
+            text-align: center; 
+            font-size: 1.1rem; 
+            border-radius: 8px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: var(--purple-main);
+            box-shadow: 0 0 0 3px rgba(107, 33, 168, 0.2);
+        }
+
+        /* MAIN APP */
+        #app { display: none; width: 100%; max-width: 1300px; padding: 30px; box-sizing: border-box; }
+
+        .app-header { text-align: center; margin: 10px 0 30px 0; border-bottom: 2px solid #e9d5ff; padding-bottom: 20px; }
+
+        .banner { 
+            background: var(--purple-main); 
+            color: white; 
+            padding: 15px; 
+            text-align: center; 
+            font-weight: bold; 
+            text-transform: uppercase; 
+            margin-bottom: 30px; 
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(107, 33, 168, 0.2); 
+        }
+
+        /* FIXED: Reduced minmax to 300px so it stacks perfectly on mobile screens */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+
+        .module { 
+            background: var(--bg-white); 
+            border: 1px solid var(--border-light);
+            border-top: 5px solid var(--purple-main); 
+            padding: 25px; 
+            border-radius: 12px; 
+            text-align: center; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            box-sizing: border-box;
+        }
+
+        video, canvas { 
+            width: 100%; 
+            background: #e5e7eb; 
+            border-radius: 8px; 
+            border: 1px solid var(--border-light); 
             object-fit: cover;
         }
 
-        #captured-image {
-            display: none;
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
-
-        .controls {
-            margin-top: 1rem;
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-        }
-
-        button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 6px;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .btn-capture {
-            background-color: var(--secondary-color);
-            color: #fff;
-        }
-
-        .btn-capture:hover { background-color: #e65100; }
-
-        .btn-analyze {
-            background-color: var(--primary-color);
+        .btn {
+            background: var(--purple-main); 
+            border: none; 
             color: white;
-            display: none; /* Hidden until image is captured */
-        }
-
-        .btn-analyze:hover { background-color: #1b5e20; }
-
-        .btn-reset {
-            background-color: #757575;
-            color: white;
-            display: none;
-        }
-
-        .btn-reset:hover { background-color: #424242; }
-
-        /* Results Section */
-        .loader {
-            display: none;
-            text-align: center;
-            padding: 2rem;
-            font-style: italic;
-            color: #666;
-        }
-
-        .results-container {
-            display: none;
-        }
-
-        .total-calories {
-            font-size: 2rem;
-            font-weight: bold;
-            color: var(--secondary-color);
-            text-align: center;
-            margin: 1rem 0;
-            padding: 1rem;
-            background: #fff8e1;
+            padding: 16px; 
+            width: 100%; 
+            font-weight: bold; 
+            text-transform: uppercase;
             border-radius: 8px;
-            border: 1px solid #ffecb3;
+            cursor: pointer; 
+            margin-top: 15px; 
+            transition: 0.3s;
+            letter-spacing: 1px;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
+        .btn:hover:not(:disabled) { 
+            background: var(--purple-hover); 
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(147, 51, 234, 0.3);
+        }
+        .btn:disabled { background: #d1d5db; color: #9ca3af; cursor: not-allowed; transform: none; box-shadow: none; }
+
+        /* Specific Button Colors */
+        #reBtn { background: var(--bg-white); border: 2px solid var(--status-error); color: var(--status-error); }
+        #reBtn:hover:not(:disabled) { background: #fef2f2; }
+
+        #status-bar { 
+            width: 100%; 
+            background: var(--bg-white); 
+            color: var(--purple-main); 
+            font-family: monospace; 
+            padding: 15px; 
+            margin-top: 30px; 
+            font-size: 0.9rem; 
+            border: 1px solid var(--purple-main); 
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-weight: bold;
         }
 
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
+        footer { margin-top: auto; padding: 40px 0 20px 0; text-align: center; width: 100%; color: var(--text-muted); }
+        .mentor { color: var(--purple-main); font-size: 1.2rem; font-weight: bold; }
+        .team { font-weight: 600; font-size: 1rem; margin-top: 5px; }
 
-        th { background-color: #f5f5f5; color: #333; }
-        
-        .macro-badges {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-            justify-content: center;
-        }
-
-        .badge {
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            color: white;
-        }
-
-        .carbs { background-color: #4CAF50; }
-        .protein { background-color: #2196F3; }
-        .fat { background-color: #F44336; }
-
-        @media (max-width: 768px) {
-            .container { grid-template-columns: 1fr; }
+        /* Mobile tweaks */
+        @media (max-width: 600px) {
+            .login-card { padding: 30px 20px; }
+            .nutrix-text { font-size: 2.2rem; letter-spacing: 4px; }
+            .rec-text { font-size: 1rem; }
+            #clock { position: static; margin-bottom: 20px; }
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>Calorie Estimation of Indian Heterogeneous Foods</h1>
-        <p>Advanced image recognition for localized diet tracking</p>
-        <div class="credits">
-            <strong>Developed by:</strong> Saruthi, Sankar & Abipriyadharshini<br>
-            <strong>Mentored by:</strong> Anand<br>
-            <em>Food Technology @ Rajalakshmi Engineering College (REC)</em>
-        </div>
-    </header>
-
-    <div class="container">
-        <div class="card">
-            <h2>Pen-Camera Interface</h2>
-            <p style="margin-bottom: 1rem; font-size: 0.9rem; color: #666;">
-                *Hardware feed will appear here. Click capture to freeze the frame for analysis.*
-            </p>
+    <div id="login-screen">
+        <div class="login-card">
+            <div id="clock" style="position: static; margin-bottom: 20px; text-align: center;">00:00:00</div>
+            <div class="logo-placeholder">LOGO<br>PLACEHOLDER</div>
             
-            <div class="camera-container">
-                <video id="camera-stream" autoplay playsinline></video>
-                <canvas id="snapshot" style="display: none;"></canvas>
-                <img id="captured-image" alt="Captured Food Frame">
-            </div>
-
-            <div class="controls">
-                <button class="btn-capture" id="capture-btn">📷 Capture Food</button>
-                <button class="btn-reset" id="reset-btn">↺ Retake</button>
-                <button class="btn-analyze" id="analyze-btn">🔍 Analyze Calories</button>
-            </div>
-        </div>
-
-        <div class="card">
-            <h2>Nutritional Analysis</h2>
-            
-            <div class="loader" id="loader">
-                <p>🔄 Matching image with REC Food Database...</p>
-                <p style="font-size: 0.8rem; margin-top: 5px;">Extracting features for heterogeneous Indian foods...</p>
-            </div>
-
-            <div id="initial-state" style="text-align: center; padding: 2rem; color: #888;">
-                Capture an image from the pen camera to view calorie estimation.
-            </div>
-
-            <div class="results-container" id="results">
-                <div class="total-calories">Total: <span id="total-cal">0</span> kcal</div>
-                
-                <h3>Detected Components</h3>
-                <table id="food-table">
-                    <thead>
-                        <tr>
-                            <th>Food Item</th>
-                            <th>Est. Portion</th>
-                            <th>Calories</th>
-                        </tr>
-                    </thead>
-                    <tbody id="food-table-body">
-                        </tbody>
-                </table>
-
-                <div class="macro-badges">
-                    <span class="badge carbs">Carbs: <span id="carbs-val">0</span>g</span>
-                    <span class="badge protein">Protein: <span id="protein-val">0</span>g</span>
-                    <span class="badge fat">Fat: <span id="fat-val">0</span>g</span>
-                </div>
-            </div>
+            <div class="rec-text">RAJALAKSHMI ENGINEERING COLLEGE</div>
+            <div class="nutrix-text">NUTRIX</div>
+            <h2 style="margin:0; font-size: 0.9rem; color: var(--text-muted); letter-spacing: 2px;">AUTHENTICATION REQUIRED</h2>
+            <input type="text" id="userInput" placeholder="NAME OF RESEARCHER..." autocomplete="off">
+            <br>
+            <button class="btn" onclick="initialize()">ACCESS SYSTEM</button>
         </div>
     </div>
 
-    <script>
-        // DOM Elements
-        const video = document.getElementById('camera-stream');
-        const canvas = document.getElementById('snapshot');
-        const capturedImg = document.getElementById('captured-image');
-        const captureBtn = document.getElementById('capture-btn');
-        const resetBtn = document.getElementById('reset-btn');
-        const analyzeBtn = document.getElementById('analyze-btn');
+    <div id="app">
+        <div class="app-header">
+            <div class="logo-placeholder" style="width: 80px; height: 80px; font-size: 0.7rem; border-width: 1px;">LOGO</div>
+            <div class="rec-text">RAJALAKSHMI ENGINEERING COLLEGE</div>
+            <div class="nutrix-text" style="font-size: 3.5rem; margin-bottom: 0;">NUTRIX</div>
+        </div>
         
-        const loader = document.getElementById('loader');
-        const initialState = document.getElementById('initial-state');
-        const resultsContainer = document.getElementById('results');
+        <div id="greeting" class="banner"></div>
 
-        // Initialize Webcam (Simulating Pen Camera hardware feed)
-        navigator.mediaDevices.getUserMedia({ video: true })
-            .then(stream => {
-                video.srcObject = stream;
+        <div class="grid">
+            <div class="module">
+                <h3 style="color:var(--purple-main); margin:0 0 15px 0; font-size: 1rem; letter-spacing: 1px;">[ LIVE_FEED ]</h3>
+                <video id="webcam" autoplay playsinline></video>
+                <button class="btn" onclick="capture()">CAPTURE FRAME</button>
+            </div>
+
+            <div class="module">
+                <h3 style="color:var(--text-muted); margin:0 0 15px 0; font-size: 1rem; letter-spacing: 1px;">[ PROCESSED_FRAME ]</h3>
+                <canvas id="snapshot" style="display: none;"></canvas> <img id="display-image" style="width: 100%; border-radius: 8px; border: 1px solid var(--border-light); display: none;">
+                
+                <div id="controls" style="display:none; gap:15px; margin-top:15px;">
+                    <button class="btn" id="upBtn" onclick="sync()">SAVE TO DRIVE</button>
+                    <button class="btn" id="reBtn" onclick="retake()">RETAKE</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="status-bar">> SYSTEM READY. WAITING FOR DATA...</div>
+
+        <footer>
+            <div class="mentor">MENTOR: Mr. ANAND R</div>
+            <div class="team">SANKARSHANAN R • SARUTHI R R • ABI PRIYADHARSHINI A</div>
+        </footer>
+    </div>
+
+    <script>
+        const SCRIPT_URL = "https://script.google.com/a/macros/rajalakshmi.edu.in/s/AKfycbxSQGBeBQgZ942GjgMp6AChzEoqKf0nvA6H2w9GFvfzbJS1RqrgvSyRoKTPZFHHmjUD/exec";
+
+        function updateClock() { 
+            const timeString = new Date().toLocaleTimeString();
+            document.querySelectorAll('#clock').forEach(el => el.innerText = timeString);
+        }
+        setInterval(updateClock, 1000);
+        updateClock(); // Initial call
+
+        function setStatus(msg) { document.getElementById('status-bar').innerText = "> " + msg.toUpperCase(); }
+
+        function initialize() {
+            const name = document.getElementById('userInput').value;
+            if(!name) return alert("System identification required.");
+            
+            document.getElementById('greeting').innerText = `HEY ${name.toUpperCase()}, WELCOME TO NUTRIX KNOW YOUR CALORIES`;
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('app').style.display = 'block';
+            setStatus("Session Started. Requesting camera access...");
+            
+            startCam();
+        }
+
+        async function startCam() {
+            try {
+                // Ensure playsinline is respected on mobile Safari
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+                const videoEl = document.getElementById('webcam');
+                videoEl.srcObject = stream;
+                videoEl.setAttribute('playsinline', true); // crucial for iOS
+                setStatus("Monitoring active.");
+            } catch (err) {
+                console.error("Camera error:", err);
+                setStatus("SYSTEM ERROR: CAMERA ACCESS DENIED OR UNAVAILABLE.");
+                document.getElementById('status-bar').style.color = "var(--status-error)";
+                document.getElementById('status-bar').style.borderColor = "var(--status-error)";
+                alert("Camera access is required. Please check your browser permissions.");
+            }
+        }
+
+        function capture() {
+            const v = document.getElementById('webcam');
+            const c = document.getElementById('snapshot');
+            const imgDisplay = document.getElementById('display-image');
+            
+            c.width = v.videoWidth; 
+            c.height = v.videoHeight;
+            c.getContext('2d').drawImage(v, 0, 0);
+            
+            // Show captured image
+            imgDisplay.src = c.toDataURL('image/jpeg', 0.8);
+            imgDisplay.style.display = 'block';
+            
+            document.getElementById('controls').style.display = 'flex';
+            setStatus("Frame buffered. Waiting for cloud sync.");
+        }
+
+        function retake() {
+            const c = document.getElementById('snapshot');
+            const imgDisplay = document.getElementById('display-image');
+            
+            c.getContext('2d').clearRect(0, 0, c.width, c.height);
+            imgDisplay.style.display = 'none';
+            imgDisplay.src = "";
+            
+            document.getElementById('controls').style.display = 'none';
+            setStatus("Buffer cleared. Monitoring active.");
+        }
+
+        function sync() {
+            const name = document.getElementById('userInput').value;
+            const canvas = document.getElementById('snapshot');
+            
+            // FIXED: Changed to JPEG and 70% quality to compress payload size
+            const data = canvas.toDataURL('image/jpeg', 0.7); 
+            
+            const upBtn = document.getElementById('upBtn');
+            const reBtn = document.getElementById('reBtn');
+
+            upBtn.innerText = "UPLOADING..."; 
+            upBtn.disabled = true; 
+            reBtn.disabled = true;
+            setStatus("Encrypting and uploading to Rajalakshmi Engineering College Drive...");
+
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                // Using text/plain avoids some strict CORS preflight checks in Apps Script
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
+                body: JSON.stringify({ 
+                    image: data, 
+                    name: name 
+                })
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.result === "success") {
+                    setStatus("SYNC SUCCESSFUL. DATA STORED IN DRIVE FOLDER.");
+                    alert("✅ DATA STORED: Frame saved successfully to REC Drive.");
+                    upBtn.innerText = "SAVE TO DRIVE";
+                    upBtn.disabled = false; 
+                    reBtn.disabled = false;
+                    retake();
+                } else {
+                    throw new Error(result.error || "Unknown backend error");
+                }
             })
             .catch(err => {
-                console.error("Error accessing camera: ", err);
-                alert("Please allow camera access to test the interface, or connect your hardware pen-camera.");
+                console.error(err);
+                setStatus("SYNC ERROR: UPLOAD FAILED.");
+                document.getElementById('status-bar').style.color = "var(--status-error)";
+                document.getElementById('status-bar').style.borderColor = "var(--status-error)";
+                alert("Upload failed. Check your Apps Script deployment permissions.");
+                upBtn.innerText = "SAVE TO DRIVE";
+                upBtn.disabled = false; 
+                reBtn.disabled = false;
             });
-
-        // Capture functionality
-        captureBtn.addEventListener('click', () => {
-            // Set canvas dimensions to match video
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            
-            // Draw current video frame to canvas
-            const context = canvas.getContext('2d');
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
-            
-            // Convert canvas to image data URL
-            const imageData = canvas.toDataURL('image/png');
-            capturedImg.src = imageData;
-            
-            // UI Toggles
-            capturedImg.style.display = 'block';
-            captureBtn.style.display = 'none';
-            resetBtn.style.display = 'block';
-            analyzeBtn.style.display = 'block';
-        });
-
-        // Reset functionality
-        resetBtn.addEventListener('click', () => {
-            capturedImg.style.display = 'none';
-            captureBtn.style.display = 'block';
-            resetBtn.style.display = 'none';
-            analyzeBtn.style.display = 'none';
-            
-            // Reset Results UI
-            resultsContainer.style.display = 'none';
-            initialState.style.display = 'block';
-            loader.style.display = 'none';
-        });
-
-        // Analyze functionality (Simulating AI Backend)
-        analyzeBtn.addEventListener('click', () => {
-            initialState.style.display = 'none';
-            resultsContainer.style.display = 'none';
-            loader.style.display = 'block';
-
-            // Simulate server/database request time (2.5 seconds)
-            setTimeout(() => {
-                loader.style.display = 'none';
-                displayMockResults();
-            }, 2500);
-        });
-
-        // Mock Database Results for Indian Heterogeneous Food (e.g., South Indian Meals/Thali)
-        function displayMockResults() {
-            const mockData = {
-                totalCalories: 645,
-                carbs: 95,
-                protein: 18,
-                fat: 22,
-                items: [
-                    { name: "White Rice", portion: "1.5 cups (250g)", calories: 325 },
-                    { name: "Sambar", portion: "1 bowl (150g)", calories: 120 },
-                    { name: "Potato Poriyal", portion: "1/2 cup (100g)", calories: 140 },
-                    { name: "Appalam", portion: "1 piece", calories: 60 }
-                ]
-            };
-
-            // Populate UI
-            document.getElementById('total-cal').innerText = mockData.totalCalories;
-            document.getElementById('carbs-val').innerText = mockData.carbs;
-            document.getElementById('protein-val').innerText = mockData.protein;
-            document.getElementById('fat-val').innerText = mockData.fat;
-
-            const tbody = document.getElementById('food-table-body');
-            tbody.innerHTML = ''; // Clear previous
-            
-            mockData.items.forEach(item => {
-                const row = `<tr>
-                    <td><strong>${item.name}</strong></td>
-                    <td>${item.portion}</td>
-                    <td>${item.calories} kcal</td>
-                </tr>`;
-                tbody.innerHTML += row;
-            });
-
-            resultsContainer.style.display = 'block';
         }
     </script>
 </body>
