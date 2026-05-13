@@ -8,8 +8,8 @@
         :root {
             --bg-white: #ffffff;
             --bg-light-purple: #f8f5ff;
-            --purple-main: #6b21a8; /* Deep Purple */
-            --purple-hover: #9333ea; /* Lighter Purple */
+            --purple-main: #6b21a8; 
+            --purple-hover: #9333ea; 
             --text-dark: #1f2937;
             --text-muted: #4b5563;
             --border-light: #e5e7eb;
@@ -38,7 +38,6 @@
             font-weight: bold;
         }
 
-        /* --- LOGO PLACEHOLDER --- */
         .logo-placeholder {
             width: 120px;
             height: 120px;
@@ -55,12 +54,9 @@
             text-align: center;
         }
 
-        /* ACCESS SYSTEM */
         #login-screen {
             position: fixed; inset: 0; background: var(--bg-light-purple);
             display: flex; justify-content: center; align-items: center; z-index: 2000;
-            padding: 20px; 
-            box-sizing: border-box;
         }
 
         .login-card {
@@ -72,7 +68,6 @@
             box-shadow: 0 10px 25px rgba(107, 33, 168, 0.1);
             max-width: 450px;
             width: 100%;
-            box-sizing: border-box;
         }
 
         .rec-text { font-size: 1.2rem; font-weight: 700; letter-spacing: 2px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 5px; }
@@ -83,8 +78,7 @@
             border: 2px solid var(--border-light); 
             color: var(--text-dark);
             padding: 15px; 
-            width: 100%; 
-            box-sizing: border-box;
+            width: 85%; 
             margin: 20px 0; 
             text-align: center; 
             font-size: 1.1rem; 
@@ -98,7 +92,6 @@
             box-shadow: 0 0 0 3px rgba(107, 33, 168, 0.2);
         }
 
-        /* MAIN APP */
         #app { display: none; width: 100%; max-width: 1300px; padding: 30px; box-sizing: border-box; }
 
         .app-header { text-align: center; margin: 10px 0 30px 0; border-bottom: 2px solid #e9d5ff; padding-bottom: 20px; }
@@ -115,7 +108,7 @@
             box-shadow: 0 4px 10px rgba(107, 33, 168, 0.2); 
         }
 
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 30px; }
 
         .module { 
             background: var(--bg-white); 
@@ -125,7 +118,6 @@
             border-radius: 12px; 
             text-align: center; 
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            box-sizing: border-box;
         }
 
         video, canvas { 
@@ -158,7 +150,6 @@
         }
         .btn:disabled { background: #d1d5db; color: #9ca3af; cursor: not-allowed; transform: none; box-shadow: none; }
 
-        /* Specific Button Colors */
         #reBtn { background: var(--bg-white); border: 2px solid var(--status-error); color: var(--status-error); }
         #reBtn:hover:not(:disabled) { background: #fef2f2; }
 
@@ -179,23 +170,15 @@
         footer { margin-top: auto; padding: 40px 0 20px 0; text-align: center; width: 100%; color: var(--text-muted); }
         .mentor { color: var(--purple-main); font-size: 1.2rem; font-weight: bold; }
         .team { font-weight: 600; font-size: 1rem; margin-top: 5px; }
-
-        /* Mobile tweaks */
-        @media (max-width: 600px) {
-            .login-card { padding: 30px 20px; }
-            .nutrix-text { font-size: 2.2rem; letter-spacing: 4px; }
-            .rec-text { font-size: 1rem; }
-            #clock { position: static; margin-bottom: 20px; }
-        }
     </style>
 </head>
 <body>
 
+    <div id="clock">00:00:00</div>
+
     <div id="login-screen">
         <div class="login-card">
-            <div id="clock" style="position: static; margin-bottom: 20px; text-align: center;">00:00:00</div>
             <div class="logo-placeholder">LOGO<br>PLACEHOLDER</div>
-            
             <div class="rec-text">RAJALAKSHMI ENGINEERING COLLEGE</div>
             <div class="nutrix-text">NUTRIX</div>
             <h2 style="margin:0; font-size: 0.9rem; color: var(--text-muted); letter-spacing: 2px;">AUTHENTICATION REQUIRED</h2>
@@ -223,9 +206,7 @@
 
             <div class="module">
                 <h3 style="color:var(--text-muted); margin:0 0 15px 0; font-size: 1rem; letter-spacing: 1px;">[ PROCESSED_FRAME ]</h3>
-                <canvas id="snapshot" style="display: none;"></canvas>
-                <img id="display-image" style="width: 100%; border-radius: 8px; border: 1px solid var(--border-light); display: none;">
-                
+                <canvas id="snapshot"></canvas>
                 <div id="controls" style="display:none; gap:15px; margin-top:15px;">
                     <button class="btn" id="upBtn" onclick="sync()">SAVE TO DRIVE</button>
                     <button class="btn" id="reBtn" onclick="retake()">RETAKE</button>
@@ -242,15 +223,13 @@
     </div>
 
     <script>
-        // Updated with the new accessible Apps Script URL
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzrY8Cl03yjKm76JOalDwhdlBGe9dV8J5vnhVhGOtGhPKE7VUrukEZdx5X8_hLM9BIbkw/exec";
+        // -------------------------------------------------------------
+        // IMPORTANT: REPLACE THIS URL AFTER YOU DEPLOY YOUR NEW SCRIPT
+        // -------------------------------------------------------------
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz5Fp-QFhs6nFa-9_xCy9j744ZtM8NioQiS6CRonDr87LZmrWPUjCjYbEP5qKe9IFP1dA/exec";
 
-        function updateClock() { 
-            const timeString = new Date().toLocaleTimeString();
-            document.querySelectorAll('#clock').forEach(el => el.innerText = timeString);
-        }
+        function updateClock() { document.getElementById('clock').innerText = new Date().toLocaleTimeString(); }
         setInterval(updateClock, 1000);
-        updateClock(); 
 
         function setStatus(msg) { document.getElementById('status-bar').innerText = "> " + msg.toUpperCase(); }
 
@@ -268,31 +247,24 @@
 
         async function startCam() {
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-                const videoEl = document.getElementById('webcam');
-                videoEl.srcObject = stream;
-                videoEl.setAttribute('playsinline', true);
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                document.getElementById('webcam').srcObject = stream;
                 setStatus("Monitoring active.");
             } catch (err) {
                 console.error("Camera error:", err);
                 setStatus("SYSTEM ERROR: CAMERA ACCESS DENIED OR UNAVAILABLE.");
                 document.getElementById('status-bar').style.color = "var(--status-error)";
                 document.getElementById('status-bar').style.borderColor = "var(--status-error)";
-                alert("Camera access is required. Please check your browser permissions.");
+                alert("Camera access is required. Please check your browser permissions or close other apps using the camera, then refresh the page.");
             }
         }
 
         function capture() {
             const v = document.getElementById('webcam');
             const c = document.getElementById('snapshot');
-            const imgDisplay = document.getElementById('display-image');
-            
             c.width = v.videoWidth; 
             c.height = v.videoHeight;
             c.getContext('2d').drawImage(v, 0, 0);
-            
-            imgDisplay.src = c.toDataURL('image/jpeg', 0.8);
-            imgDisplay.style.display = 'block';
             
             document.getElementById('controls').style.display = 'flex';
             setStatus("Frame buffered. Waiting for cloud sync.");
@@ -300,12 +272,7 @@
 
         function retake() {
             const c = document.getElementById('snapshot');
-            const imgDisplay = document.getElementById('display-image');
-            
             c.getContext('2d').clearRect(0, 0, c.width, c.height);
-            imgDisplay.style.display = 'none';
-            imgDisplay.src = "";
-            
             document.getElementById('controls').style.display = 'none';
             setStatus("Buffer cleared. Monitoring active.");
         }
@@ -313,9 +280,7 @@
         function sync() {
             const name = document.getElementById('userInput').value;
             const canvas = document.getElementById('snapshot');
-            
-            const data = canvas.toDataURL('image/jpeg', 0.7); 
-            
+            const data = canvas.toDataURL('image/png');
             const upBtn = document.getElementById('upBtn');
             const reBtn = document.getElementById('reBtn');
 
@@ -326,7 +291,7 @@
 
             fetch(SCRIPT_URL, {
                 method: 'POST',
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
+                redirect: 'follow', // Crucial for GAS web apps
                 body: JSON.stringify({ 
                     image: data, 
                     name: name 
@@ -350,7 +315,7 @@
                 setStatus("SYNC ERROR: UPLOAD FAILED.");
                 document.getElementById('status-bar').style.color = "var(--status-error)";
                 document.getElementById('status-bar').style.borderColor = "var(--status-error)";
-                alert("Upload failed. Please check your console for details.");
+                alert("Upload failed. Ensure you deployed the script with 'Anyone' access and copied the new URL into the SCRIPT_URL variable.");
                 upBtn.innerText = "SAVE TO DRIVE";
                 upBtn.disabled = false; 
                 reBtn.disabled = false;
