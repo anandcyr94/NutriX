@@ -273,9 +273,8 @@
         // -------------------------------------------------------------
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx2dIyCbF83XdRsXRDhKJJrRr6WM08dSNXJfw43bIhWTnvSX2GcKJBNojVH6WzmunTSyw/exec";
         
-        // REPLACE THE STRING BELOW WITH YOUR NEW API KEY FROM GOOGLE CLOUD CONSOLE
-        // IMPORTANT: The key MUST start with "AIza"
-        const GEMINI_API_KEY = "AQ.Ab8RN6JsgRLSunrLcaN_nbNqCakZIp7Dr4-ZPF0C_wpxrXtvEg"; 
+        // Final Correct Key Applied
+        const GEMINI_API_KEY = "AIzaSyCwVIDMONgABsWE5vf1iILUVb9PXB02qXc"; 
 
         function updateClock() { document.getElementById('clock').innerText = new Date().toLocaleTimeString(); }
         setInterval(updateClock, 1000);
@@ -346,7 +345,7 @@
         // GEMINI MULTIMODAL FOOD ANALYSIS
         // -------------------------------------------------------------
         async function analyzeFood() {
-            if (GEMINI_API_KEY === "AQ.Ab8RN6JsgRLSunrLcaN_nbNqCakZIp7Dr4-ZPF0C_wpxrXtvEg" || !GEMINI_API_KEY || !GEMINI_API_KEY.startsWith("AIza")) {
+            if (!GEMINI_API_KEY || !GEMINI_API_KEY.startsWith("AIza")) {
                 alert("Please add your valid Google Cloud Gemini API key (starting with AIza) inside the script source code variables.");
                 return;
             }
