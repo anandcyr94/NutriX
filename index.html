@@ -39,20 +39,23 @@
             font-weight: bold;
         }
 
-        .logo-placeholder {
+        /* Updated Logo CSS */
+        .logo-img {
             width: 120px;
-            height: 120px;
-            background-color: #f3e8ff;
-            border: 2px dashed var(--purple-main);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            height: auto;
+            max-height: 120px;
             margin: 0 auto 20px auto;
-            color: var(--purple-main);
-            font-weight: bold;
-            font-size: 0.9rem;
-            text-align: center;
+            display: block;
+            object-fit: contain;
+        }
+        
+        .header-logo {
+            width: 80px;
+            height: auto;
+            max-height: 80px;
+            margin: 0 auto 10px auto;
+            display: block;
+            object-fit: contain;
         }
 
         #login-screen {
@@ -201,7 +204,9 @@
 
     <div id="login-screen">
         <div class="login-card">
-            <div class="logo-placeholder">LOGO<br>PLACEHOLDER</div>
+            <!-- REPLACED: Login Screen Logo -->
+            <img src="REC Logo.png" alt="REC Logo" class="logo-img">
+            
             <div class="rec-text">RAJALAKSHMI ENGINEERING COLLEGE</div>
             <div class="nutrix-text">NUTRIX</div>
             <h2 style="margin:0; font-size: 0.9rem; color: var(--text-muted); letter-spacing: 2px;">AUTHENTICATION REQUIRED</h2>
@@ -213,7 +218,9 @@
 
     <div id="app">
         <div class="app-header">
-            <div class="logo-placeholder" style="width: 80px; height: 80px; font-size: 0.7rem; border-width: 1px;">LOGO</div>
+            <!-- REPLACED: App Header Logo -->
+            <img src="REC Logo.png" alt="REC Logo" class="header-logo">
+            
             <div class="rec-text">RAJALAKSHMI ENGINEERING COLLEGE</div>
             <div class="nutrix-text" style="font-size: 3.5rem; margin-bottom: 0;">NUTRIX</div>
         </div>
@@ -269,8 +276,7 @@
         // -------------------------------------------------------------
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx2dIyCbF83XdRsXRDhKJJrRr6WM08dSNXJfw43bIhWTnvSX2GcKJBNojVH6WzmunTSyw/exec";
         
-        // WARNING: Storing API Keys in plaintext client-side is for prototyping only. 
-        // For production, route this request through your Google Apps Script backend to keep it secure.
+        // UPDATED: User's provided API Key applied below
         const GEMINI_API_KEY = "AQ.Ab8RN6LfJlk01_hWZ9jv5ex44mU1frZVpPOxZMWaWyTA21aNcw"; 
 
         function updateClock() { document.getElementById('clock').innerText = new Date().toLocaleTimeString(); }
@@ -339,10 +345,10 @@
         }
 
         // -------------------------------------------------------------
-        // NEW FEATURE: GEMINI MULTIMODAL FOOD ANALYSIS
+        // GEMINI MULTIMODAL FOOD ANALYSIS
         // -------------------------------------------------------------
         async function analyzeFood() {
-            if (GEMINI_API_KEY === "AQ.Ab8RN6LfJlk01_hWZ9jv5ex44mU1frZVpPOxZMWaWyTA21aNcw" || !GEMINI_API_KEY) {
+            if (GEMINI_API_KEY === "YOUR_GEMINI_API_KEY_HERE" || !GEMINI_API_KEY) {
                 alert("Please add your Gemini API key inside the script source code variables.");
                 return;
             }
@@ -397,7 +403,7 @@
                 }
             } catch (error) {
                 console.error("Gemini API Error:", error);
-                resultDiv.innerText = "ERROR EXECUTE: Unable to process frame metrics via Gemini API backend.";
+                resultDiv.innerText = "ERROR EXECUTE: Unable to process frame metrics via Gemini API backend. Ensure your API Key is valid and active.";
                 setStatus("API processing fault occurred.", 'error');
             } finally {
                 analyzeBtn.innerText = "ANALYZE CALORIES";
