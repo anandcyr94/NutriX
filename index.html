@@ -87,12 +87,7 @@
         function initialize() {
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('app').style.display = 'block';
-            startCam();
-        }
-
-        async function startCam() {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-            document.getElementById('webcam').srcObject = stream;
+            navigator.mediaDevices.getUserMedia({ video: true }).then(s => document.getElementById('webcam').srcObject = s);
         }
 
         function capture() {
@@ -104,7 +99,9 @@
 
         async function analyzeFood() {
             const canvas = document.getElementById('snapshot'), resultDiv = document.getElementById('analysis-result');
-            resultDiv.innerText = "Connecting to LogMeal...";
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            analyzeBtn.disabled = true;
+            resultDiv.innerText = "Processing...";
 
             canvas.toBlob(async (blob) => {
                 const formData = new FormData();
@@ -118,7 +115,7 @@
                     });
 
                     const data = await response.json();
-                    if (!data.imageId) throw new Error("API rejected image upload.");
+                    if (!data.imageId) throw new Error("API rejection: No imageId returned.");
 
                     const nutResponse = await fetch('https://api.logmeal.com/v2/nutrition/recipe/nutritionalInfo', {
                         method: 'POST',
@@ -127,11 +124,21 @@
                     });
 
                     const nutData = await nutResponse.json();
-                    resultDiv.innerText = `[ NUTRITION ANALYSIS ]\nCalories: ${nutData.nutritional_info.calories} kcal\nProtein: ${nutData.nutritional_info.macronutrients_proteins}g`;
+                    resultDiv.innerText = `[ ANALYSIS ]\nCalories: ${nutData.nutritional_info.calories} kcal\nProtein: ${nutData.nutritional_info.macronutrients_proteins}g`;
                 } catch (err) {
                     resultDiv.innerText = "Error: " + err.message;
+                } finally {
+                    analyzeBtn.disabled = false;
                 }
-            }, 'image/jpeg');
+            }, 'image/jpeg', 0.8);
+        }
+
+        function sync() {
+            const name = document.getElementById('userInput').value;
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify({ image: document.getElementById('snapshot').toDataURL(), name: name })
+            }).then(() => alert("Saved to Drive!"));
         }
     </script>
 </body>
